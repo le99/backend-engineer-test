@@ -1,6 +1,6 @@
 {{#if isAuthenticated}}
 <p>{{email}}</p>
-<a href="/signout">Cerrar sessión</a>
+<a href="/api/auth/signout">Cerrar sessión</a>
 {{else}}
-<a href="/login">Iniciar sessión</a>
+<a href="/api/auth/login">Iniciar sessión</a>
 {{/if}}

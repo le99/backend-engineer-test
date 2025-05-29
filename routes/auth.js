@@ -46,7 +46,7 @@ function getPathFromURL(urlString) {
   }
 }
 
-router.get(getPathFromURL(process.env.AWS_COGNITO_CLIENT_REDIRECT_URL), async function(req, res) {
+router.get('/signedin', async function(req, res) {
   try {
     const params = openIdClient.callbackParams(req);
     const tokenSet = await openIdClient.callback(
