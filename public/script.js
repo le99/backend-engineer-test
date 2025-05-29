@@ -8,4 +8,10 @@ $(function() {
     let val = $("#city").val();
     await axios.get('/api/restaurant?city=' + val);
   })
+
+  $("#search-btn-txs").on('click', async function() {
+    console.log(11111);
+    let type = $("#tx-type").val();
+    await axios.get('/api/transaction?type=' + type);
+  })
 }); 

@@ -1,3 +1,1 @@
-
-
-INSERT INTO store (name) VALUES ('store 1');
+INSERT INTO transaction_audit(type) VALUES ('login');

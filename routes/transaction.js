@@ -11,28 +11,24 @@ const validator = require('validator');
 
 router.use(checkAuth, requiresAuthentication);
 
-router.get('/hello', async function(req, res) {
-  return res.json({ msg: "hello" });
-});
-
-router.get('/store', async function(req, res) {
+router.get('/', async function(req, res) {
   let page = (req.query.page) ? parseInt(req.query.page, 10) : 0;
   let query = (req.query.query) ? "%" + req.query.query + "%" : "%";
 
-  let stores = (await db.query(
-    `SELECT id, name, tel 
-      FROM store 
-      WHERE name ILIKE $1
+  let txs = (await db.query(
+    `SELECT id, type
+      FROM transaction_audit 
+      WHERE type ILIKE $1
       LIMIT $2 
       OFFSET $3`,
     [query, PAGE_SIZE + 1, page * PAGE_SIZE])).rows;
 
   let d = {};
-  if (stores.length === PAGE_SIZE + 1) {
+  if (txs.length === PAGE_SIZE + 1) {
     d.nextPage = page + 1;
-    stores.pop();
+    txs.pop();
   }
-  d.data = stores;
+  d.data = txs;
   if (page != 0) {
     d.prevPage = page - 1;
   }
