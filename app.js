@@ -10,6 +10,7 @@ const pgSession = require('connect-pg-simple')(expressSession);
 
 var authRouter = require('./routes/auth');
 var appRouter = require('./routes/app');
+var restaurantRouter = require('./routes/restaurant');
 var adminRouter = require('./routes/admin');
 var userRouter = require('./routes/user');
 
@@ -59,6 +60,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/auth', authRouter);
 app.use('/', appRouter);
+app.use('/api/restaurant', restaurantRouter);
 app.use('/api/user', userRouter);
 
 app.get('/health-check', (req, res) => {
