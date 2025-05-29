@@ -22,30 +22,34 @@
             <a href="/api/auth/signout">Cerrar sessión</a>
           </div>
         </div>
-        <div class="row mt-3">
-          <div class="col">
-            <hr />
-            <button class="btn btn-primary" id="search-btn">
-              Buscar restaurantes
-            </button>
-          </div>
-        </div>
-
-        <div class="row mt-3">
-          <div class="col">
-            <hr />
-            <label for="city" class="form-label">Ciudad</label>
-            <input type="text" id="city" class="form-control"> </input>
-            <button class="btn btn-primary mt-2" id="search-btn-city">
-              Buscar restaurantes 
-            </button>
-          </div>
-        </div>
-
 
       {{else}}
-      <a href="/api/auth/login">Iniciar sessión</a>
+        <div class="row mt-3">
+          <div class="col">
+            <a href="/api/auth/login">Iniciar sessión</a>
+          </div>
+        </div>
       {{/if}}
+
+      <div class="row mt-3">
+        <div class="col">
+          <hr />
+          <button class="btn btn-primary" id="search-btn">
+            Buscar restaurantes
+          </button>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col">
+          <hr />
+          <label for="city" class="form-label">Ciudad</label>
+          <input type="text" id="city" class="form-control"> </input>
+          <button class="btn btn-primary mt-2" id="search-btn-city">
+            Buscar restaurantes 
+          </button>
+        </div>
+      </div>
     </div>
   </body>
 </html>

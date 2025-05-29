@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const db = require('../db/postgresql');
 const _ = require('underscore');
-const { checkAuth, hasPermissions } = require('./checkAuthMiddleware');
+const { checkAuth, requiresAuthentication } = require('./checkAuthMiddleware');
 const pg = require('pg');
 const { PAGE_SIZE } = require('../constants');
 const yup = require('yup');
@@ -10,6 +10,8 @@ const validator = require('validator');
 const axios = require('axios');
 const fs = require('node:fs/promises');
 
+
+router.use(checkAuth, requiresAuthentication);
 
 const GEOAPI_URL_GEOCODE = "https://api.geoapify.com/v1/geocode/search";
 async function getCoordsCity(city) {
@@ -46,16 +48,16 @@ router.get('/', async function(req, res) {
 
   console.log(123);
   if (lat !== undefined && lon !== undefined) {
-    let rt = await axios.get(`${GEOAPI_URL}&filter=circle:${lon},${lat},1000&bias=proximity:${lon},${lat}&limit=20&apiKey=${process.env.GEOAPIFY_KEY}`);
-    restaurants = rt.data;
+    // let rt = await axios.get(`${GEOAPI_URL}&filter=circle:${lon},${lat},1000&bias=proximity:${lon},${lat}&limit=20&apiKey=${process.env.GEOAPIFY_KEY}`);
+    // restaurants = rt.data;
     // await fs.writeFile('./testData/restaurants.json', JSON.stringify(restaurants));
+    restaurants = JSON.parse(await fs.readFile('./testData/restaurants.json', 'utf8'));
   }
   else {
     return res.status(400).json({ msg: "error" });
   }
 
 
-  // restaurants = JSON.parse(await fs.readFile('./testData/restaurants.json', 'utf8'));
   return res.json(restaurants);
 });
 

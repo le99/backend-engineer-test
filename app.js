@@ -11,8 +11,7 @@ const pgSession = require('connect-pg-simple')(expressSession);
 var authRouter = require('./routes/auth');
 var appRouter = require('./routes/app');
 var restaurantRouter = require('./routes/restaurant');
-var adminRouter = require('./routes/admin');
-var userRouter = require('./routes/user');
+var transactionRouter = require('./routes/transaction');
 
 const helmet = require('helmet');
 const csrfUtilities = require('./csrf/csrfConfig');
@@ -60,8 +59,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/auth', authRouter);
 app.use('/', appRouter);
-app.use('/api/restaurant', restaurantRouter);
-app.use('/api/user', userRouter);
 
 app.get('/health-check', (req, res) => {
   res.json({ msg: 'ok' });
@@ -69,7 +66,8 @@ app.get('/health-check', (req, res) => {
 
 
 app.use(csrfUtilities.csrfSynchronisedProtection);
-app.use('/api/admin', adminRouter);
+app.use('/api/restaurant', restaurantRouter);
+app.use('/api/transaction', transactionRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

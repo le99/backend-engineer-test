@@ -9,4 +9,10 @@ const checkAuth = (req, res, next) => {
   next();
 };
 
-module.exports = { checkAuth };
+const requiresAuthentication = async (req, res, next) => {
+  if (!req.isAuthenticated) {
+    return res.status(401).json({ msg: 'unauthenticated' });
+  }
+  next();
+};
+module.exports = { checkAuth, requiresAuthentication };
