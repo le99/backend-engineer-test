@@ -3,7 +3,7 @@ const _ = require('underscore');
 const logReq = async (req, res, next) => {
   let userId = null;
 
-  if (req.session.userInfo) {
+  if (req.session && req.session.userInfo) {
     userId = req.session.userInfo.sub;
   }
 

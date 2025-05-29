@@ -47,7 +47,6 @@ router.get('/', async function(req, res) {
     lon = coords.lon;
   }
 
-  console.log(123);
   if (lat !== undefined && lon !== undefined) {
     let rt = await axios.get(`${GEOAPI_URL}&filter=circle:${lon},${lat},1000&bias=proximity:${lon},${lat}&limit=20&apiKey=${process.env.GEOAPIFY_KEY}`);
     restaurants = rt.data;
