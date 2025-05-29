@@ -1,4 +1,4 @@
 -- DROP TABLE "session";
 
-DROP TABLE store;
+DROP TABLE transaction_audit;
 

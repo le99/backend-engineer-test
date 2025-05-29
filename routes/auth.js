@@ -4,6 +4,7 @@ const { Issuer, generators } = require('openid-client');
 const db = require('../db/postgresql');
 const { checkAuth, hasPermissions } = require('./checkAuthMiddleware');
 const { generateToken, getTokenFromState } = require('../csrf/csrfConfig');
+const { logReq } = require('./auditMiddleware');
 
 let openIdClient;
 // Initialize OpenID Client
@@ -18,7 +19,7 @@ async function initializeClient() {
 };
 initializeClient().catch(console.error);
 
-router.get('/login', async function(req, res) {
+router.get('/login', logReq, async function(req, res) {
   const nonce = generators.nonce();
   const state = generators.state();
 
@@ -61,11 +62,17 @@ router.get('/signedin', async function(req, res) {
     const userInfo = await openIdClient.userinfo(tokenSet.access_token);
     const uuid = userInfo.sub;
 
+    await db.query(`
+      INSERT INTO transaction_audit (url, creation, user_id)
+      VALUES ($1, $2, $3)
+    `, [req.originalUrl, new Date(), uuid]);
+
     let q0 = await db.query('SELECT id FROM auth_user WHERE id =$1', [uuid]);
     if (q0.rows.length == 0) {
       await db.query('INSERT INTO auth_user(id, email) VALUES($1, $2)'
         , [uuid, userInfo.email]);
     }
+
 
     req.session.userInfo = userInfo;
     generateToken(req, res);
@@ -78,7 +85,7 @@ router.get('/signedin', async function(req, res) {
 
 
 
-router.get('/signout', (req, res) => {
+router.get('/signout', logReq, (req, res) => {
   req.session.destroy();
   const logoutUrl = `${process.env.AWS_COGNITO_DOMAIN}/logout?client_id=${process.env.AWS_COGNITO_CLIENT_ID}&logout_uri=${process.env.AWS_COGNITO_CLIENT_SIGNEDOUT_URL}`;
   res.redirect(logoutUrl);

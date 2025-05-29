@@ -7,18 +7,19 @@ const pg = require('pg');
 const { PAGE_SIZE } = require('../constants');
 const yup = require('yup');
 const validator = require('validator');
+const { logReq } = require('./auditMiddleware');
 
 
-router.use(checkAuth, requiresAuthentication);
+router.use(checkAuth, logReq, requiresAuthentication);
 
 router.get('/', async function(req, res) {
   let page = (req.query.page) ? parseInt(req.query.page, 10) : 0;
   let query = (req.query.query) ? "%" + req.query.query + "%" : "%";
 
   let txs = (await db.query(
-    `SELECT id, type
+    `SELECT *
       FROM transaction_audit 
-      WHERE type ILIKE $1
+      WHERE url ILIKE $1
       LIMIT $2 
       OFFSET $3`,
     [query, PAGE_SIZE + 1, page * PAGE_SIZE])).rows;

@@ -1,1 +1,1 @@
-INSERT INTO transaction_audit(type) VALUES ('login');
+-- INSERT INTO transaction_audit(type) VALUES ('login');
