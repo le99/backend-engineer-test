@@ -1,2 +1,6 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+{{#if isAuthenticated}}
+<p>{{email}}</p>
+<a href="/signout">Cerrar sessión</a>
+{{else}}
+<a href="/login">Iniciar sessión</a>
+{{/if}}

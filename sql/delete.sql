@@ -1,3 +1,4 @@
-DROP TABLE store;
+-- DROP TABLE "session";
 
+DROP TABLE store;
 

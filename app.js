@@ -5,6 +5,11 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var { pool } = require('./db/postgresql');
 
+var expressSession = require('express-session');
+const pgSession = require('connect-pg-simple')(expressSession);
+
+var authRouter = require('./routes/auth');
+var appRouter = require('./routes/app');
 var adminRouter = require('./routes/admin');
 var userRouter = require('./routes/user');
 
@@ -28,13 +33,33 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+
+app.use(expressSession({
+  store: new pgSession({
+    pool: pool,                // Connection pool
+    tableName: 'session'   // Use another table-name than the default "session" one
+    // Insert connect-pg-simple options here
+  }),
+  secret: process.env.FOO_COOKIE_SECRET,
+  resave: false,
+  cookie: {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    sameSite: 'lax'
+  }, // 30 days
+
+  // Insert express-session options here
+  saveUninitialized: false,
+  name: 'sessionId',
+}));
+
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+app.use('/', authRouter);
+app.use('/', appRouter);
 app.use('/api/user', userRouter);
-
 
 app.get('/health-check', (req, res) => {
   res.json({ msg: 'ok' });
