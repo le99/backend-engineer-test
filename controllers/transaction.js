@@ -9,7 +9,12 @@ const validator = require('validator');
 
 module.exports.getTxs = async function(req, res) {
 
+  if ('page' in req.query && !_.isNumber(req.query.page)) {
+    return res.status(400).json({ msg: 'bad req' });
+  }
+
   let page = (req.query.page) ? parseInt(req.query.page, 10) : 0;
+
   let query = (req.query.query) ? "%" + req.query.query + "%" : "%";
 
   let txs = (await db.query(
