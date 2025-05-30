@@ -7,7 +7,11 @@ const yup = require('yup');
 const validator = require('validator');
 
 
-module.exports.getTxs = async function(page, query) {
+module.exports.getTxs = async function(req, res) {
+
+  let page = (req.query.page) ? parseInt(req.query.page, 10) : 0;
+  let query = (req.query.query) ? "%" + req.query.query + "%" : "%";
+
   let txs = (await db.query(
     `SELECT *
       FROM transaction_audit 
@@ -25,5 +29,5 @@ module.exports.getTxs = async function(page, query) {
   if (page != 0) {
     d.prevPage = page - 1;
   }
-  return d;
+  return res.json(d);
 }
