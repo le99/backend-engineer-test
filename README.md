@@ -2,17 +2,41 @@
 
 ## Tecnologias
 
-* AWS Cognito
+* AWS Cognito, con OAuth 2 para Node.js
 * node v22.14.0
 * PostgreSQL 15.12
 * [Geoapify](<https://apidocs.geoapify.com/docs/geocoding/forward-geocoding/>)
+
+# Correr con Docker compose
+
+Crear un archivo .env con las vairables de entorno como en .env.sample
+
+```bash
+docker compose build
+docker compose up
+
+#Parar
+docker compose down
+```
+
+Pagina:
+<http://localhost:5173/>
+
+PGAdmin
+<http://localhost:5050/browser/>
+URL:
+postgres_container:5432
+Usuario:
+postgres
+PWD:
+pwd
+
+# Correr localmente
 
 ```bash
 npm install
 npm start
 ```
-
-Se deben poner las variables de entorno como se muestra .env.sample
 
 Pruebas
 
@@ -32,11 +56,3 @@ AWS Cognito:
 * /api/auth/signedin
 * /api/auth/signout
 * /api/auth/signedout
-
-# Docker compose
-
-PGAdmin
-<http://localhost:5050/browser/>
-postgres_container:5432
-postgres
-pwd
