@@ -1,12 +1,76 @@
-version: '3.3'
+version: '3.5'
 services:
   app:
+    depends_on:
+      postgres:
+        condition: service_healthy
+        restart: true
     build:
       context: './'
       dockerfile: Dockerfile
     
     environment:
       - PORT=3000
+      - DATABASE_URL=postgresql://postgres:pwd@postgres_container:5432/postgres
+      - FOO_COOKIE_SECRET=${FOO_COOKIE_SECRET}
+
+      - AWS_COGNITO_CLIENT_ID=${AWS_COGNITO_CLIENT_ID}
+      - AWS_COGNITO_CLIENT_SECRET=${AWS_COGNITO_CLIENT_SECRET}
+      - AWS_COGNITO_CLIENT_REDIRECT_URL=${AWS_COGNITO_CLIENT_REDIRECT_URL}
+      - AWS_COGNITO_CLIENT_SIGNEDOUT_URL=${AWS_COGNITO_CLIENT_SIGNEDOUT_URL}
+      - AWS_COGNITO_DOMAIN=${AWS_COGNITO_DOMAIN}
+      - AWS_COGNITO_ISSUER_DISCOVER=${AWS_COGNITO_ISSUER_DISCOVER}
+
+      - GEOAPIFY_KEY=${GEOAPIFY_KEY}
     
     ports:
-      - "3000:3000"
+      - "5173:3000"
+    
+    networks:
+      - postgres
+
+  postgres:
+    container_name: postgres_container
+    image: postgres:15.13-bullseye
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pwd
+      PGDATA: /data/postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    volumes:
+      - ./sql/create.sql:/docker-entrypoint-initdb.d/db.sql
+
+  pgadmin:
+    depends_on:
+      postgres:
+        condition: service_healthy
+        restart: true
+
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:9.4.0
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: pwd
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+
+networks:
+  postgres:
+    driver: bridge

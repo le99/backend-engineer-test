@@ -32,3 +32,11 @@ AWS Cognito:
 * /api/auth/signedin
 * /api/auth/signout
 * /api/auth/signedout
+
+# Docker compose
+
+PGAdmin
+<http://localhost:5050/browser/>
+postgres_container:5432
+postgres
+pwd
