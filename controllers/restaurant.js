@@ -14,7 +14,7 @@ async function getCoordsCity(city) {
   if (!cityData ||
     !cityData.features ||
     !cityData.features[0] ||
-    cityData.features[0].properties
+    !cityData.features[0].properties
   ) {
     throw Error("unexpected format");
   }
