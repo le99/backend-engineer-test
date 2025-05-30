@@ -23,13 +23,11 @@ Pagina:
 <http://localhost:5173/>
 
 PGAdmin
-<http://localhost:5050/browser/>
-URL:
-postgres_container:5432
-Usuario:
-postgres
-PWD:
-pwd
+
+* url: <http://localhost:5050/browser/>
+* DB url: postgres_container:5432
+* DB user: postgres
+* DB pwd: pwd
 
 # Correr localmente
 
