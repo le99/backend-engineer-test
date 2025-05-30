@@ -48,7 +48,6 @@ function getPathFromURL(urlString) {
 }
 
 router.get('/signedin', async function(req, res) {
-  console.log('signedin');
   try {
     const params = openIdClient.callbackParams(req);
     const tokenSet = await openIdClient.callback(
