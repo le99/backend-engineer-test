@@ -1,11 +1,8 @@
 
 const db = require('../db/postgresql');
 const _ = require('underscore');
-const pg = require('pg');
 const { PAGE_SIZE } = require('../constants');
-const yup = require('yup');
-const validator = require('validator');
-
+const fs = require('node:fs/promises');
 
 module.exports.getTxs = async function(req, res) {
 
@@ -15,15 +12,19 @@ module.exports.getTxs = async function(req, res) {
 
   let page = (req.query.page) ? parseInt(req.query.page, 10) : 0;
 
-  let query = (req.query.query) ? "%" + req.query.query + "%" : "%";
+  let url = (req.query.url) ? "%" + req.query.url + "%" : "%";
 
-  let txs = (await db.query(
+
+  let q = (await db.query(
     `SELECT *
       FROM transaction_audit 
       WHERE url ILIKE $1
       LIMIT $2 
       OFFSET $3`,
-    [query, PAGE_SIZE + 1, page * PAGE_SIZE])).rows;
+    [url, PAGE_SIZE + 1, page * PAGE_SIZE]));
+
+  let txs = q.rows;
+  // await fs.writeFile('./testData/txs.json', JSON.stringify(q));
 
   let d = {};
   if (txs.length === PAGE_SIZE + 1) {

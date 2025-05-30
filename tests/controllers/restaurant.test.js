@@ -47,5 +47,17 @@ describe("Restaurant controller getRestaurants", () => {
     expect(mRes.json).toBeCalledWith(restaurants);
   });
 
+  test('No matching cities', async () => {
+    let cityData = {};
+    let restaurants = JSON.parse(await fs.readFile('./testData/restaurants.json', 'utf8'));
+    jest.spyOn(geoapiService, 'geocodeSearch').mockResolvedValueOnce(cityData);
+    jest.spyOn(geoapiService, 'places').mockResolvedValueOnce(restaurants);
+
+    const mReq = { query: { city: 'bogota' } }
+    const mRes = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+    await controller.getRestaurants(mReq, mRes);
+    expect(mRes.status).toBeCalledWith(500);
+    expect(mRes.json).toBeCalledWith({ msg: "error" });
+  });
 
 })

@@ -11,9 +11,21 @@ const geoapiService = require('../services/geoapi.js');
 
 async function getCoordsCity(city) {
   const cityData = await geoapiService.geocodeSearch(city);
+  if (!cityData ||
+    !cityData.features ||
+    !cityData.features[0] ||
+    cityData.features[0].properties
+  ) {
+    throw Error("unexpected format");
+  }
   let cityCord = cityData.features[0].properties;
+
   let lat = cityCord.lat;
   let lon = cityCord.lon;
+
+  if (!_.isNumber(lat) || !_.isNumber(lon)) {
+    throw Error("unexpected format");
+  }
 
   return { lat, lon };
 }
@@ -35,7 +47,6 @@ module.exports.getRestaurants = async function(req, res) {
       lon = coords.lon;
     }
     catch (err) {
-      console.log(err);
       return res.status(500).json({ msg: "error" });
     }
   }

@@ -10,8 +10,7 @@ $(function() {
   })
 
   $("#search-btn-txs").on('click', async function() {
-    console.log(11111);
-    let type = $("#tx-type").val();
-    await axios.get('/api/transaction?type=' + type);
+    let type = $("#tx-url").val();
+    await axios.get('/api/transaction?url=' + type);
   })
 }); 
